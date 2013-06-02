@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html dir='rtl'>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 ; font-family: arial; font-size: 11px;}
+      #map-canvas { height: 100% }
+    </style>
+    <script src="./jquery-1.10.1.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&language=ja"></script>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClAjhlHfphmBlZjozIOtWpOkJrV1XR26w&sensor=true">
+    </script>
+    <script type="text/javascript">
+
+    //var gina = function() {
+      that = this;
+      markers = [];
+
+      var initialize = function() {
+      
+        var mapOptions = {
+          center: new google.maps.LatLng(32.165833, 34.836667),
+          zoom: 16,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+         that.map = new google.maps.Map(document.getElementById("map-canvas"),
+            mapOptions);
+
+        // Try HTML5 geolocation
+        if(navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+             that.pos = new google.maps.LatLng(position.coords.latitude,
+                                             position.coords.longitude);
+
+             var memarker = new google.maps.Marker({
+                map:that.map,
+                draggable:false,
+                animation: google.maps.Animation.DROP,
+                position: that.pos,
+                title: 'me :)'
+              }); 
+             iconFile = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'; 
+              memarker.setIcon(iconFile) 
+
+            infowindow = new google.maps.InfoWindow({
+              map: that.map,
+              position: that.pos,
+              content: '<br/><b>שלום :) טוב שבאת...</b>'
+            });
+
+            that.map.setCenter(that.pos);
+
+          }, function() {
+            handleNoGeolocation(true);
+          });
+        } else {
+          // Browser doesn't support Geolocation
+          handleNoGeolocation(false);
+        }
+
+
+        that.getPOI(that.pos);
+          //alert(marker(i));
+          //google.maps.event.addListener(marker[i], 'click', toggleBounce);
+
+        
+
+        
+      }
+
+      var toggleBounce = function() {
+        if (marker.getAnimation() != null) {
+          marker.setAnimation(null);
+        } else {
+          marker.setAnimation(google.maps.Animation.BOUNCE);
+        }
+      }
+
+      var getPOI = function(LatLng) {
+
+        // $.ajax({
+        //   url: "poi.js",
+        //   dataType: "json",
+        //   cache: false
+        // }).done(function( pois ) {
+          
+
+
+        // });
+
+        // adding herzeliya poi
+        //me - 32.120519,34.838581
+        //natalie - 32.165277,34.845997
+        var g1 = new google.maps.LatLng(32.162991,34.84756);
+        var g2 = new google.maps.LatLng(32.163045,34.851165);
+        var g3 = new google.maps.LatLng(32.1625,34.841101);
+        var g4 = new google.maps.LatLng(32.163935,34.837217);
+        var g5 = new google.maps.LatLng(32.162427,34.843354);
+        var g6 = new google.maps.LatLng(32.16804,34.851122);
+        var g7 = new google.maps.LatLng(32.170601,34.855413);
+        var g8 = new google.maps.LatLng(32.165188,34.851444);
+
+        locationArray = [g1,g2,g3,g4,g5,g6,g7,g8];
+        //locationNameArray = ['ראול וולנברג','הבנים','<br/><b>הבשת</b>','<br/><b>גל</b>','<br/><b>בן גוריון</b>','<br/><b>סוקולוב</b>','<br/><b>פארק רבין</b>','<br/><b>העצמאות</b>'];
+        var locationNameArray = ['ראול וולנברג','הבנים','הבשת','גל','בן גוריון','סוקולוב','פארק רבין','העצמאות'];
+        locationTextArray = ['<br/><b>ראול וולנברג</b><br/>גינה מוארת עם המון צל<br/>מתקנים לילדים קטנים','<br/><b>הבנים</b><br/>קצת מלוכלך... חבל','<br/><b>הבשת</b><br/>לא ללכת... גועל!!!','<br/><b>גל</b><br/>יופי של גינה. הנאה מובטחת','<br/><b>בן גוריון</b><br/>גישה נוחה לעגלות<br/>מתקנים לכל הגילאים ודשא','<br/><b>סוקולוב</b><br/>מלא מלא פרטים מיותרים','<br/><b>פארק רבין</b><br/>עוד פרטים על הגינה','<br/><b>העצמאות</b><br/>לא נמצאו פרטים... אנא עדכנו'];
+
+        for (var i=0;i<(locationArray.length +1);i++)
+        { 
+          //alert(i);
+            markers[i] = new google.maps.Marker({
+            map:that.map,
+            draggable:false,
+            animation: google.maps.Animation.DROP,
+            position: locationArray[i],
+            title: locationNameArray[i],
+            Snippet: locationTextArray[i],
+            id: i,
+            html: locationTextArray[i]
+          });
+
+          google.maps.event.addDomListener(markers[i], 'click', loadPOIDescription);
+
+          // google.maps.onMarkerClick(function() { 
+          //     
+          //  });
+        }
+        
+
+
+        // var coord;
+        // for (coord in locationArray) {
+        //   new google.maps.Marker({
+        //     position: locationArray[coord],
+        //     map: gallPetersMap,
+        //     title: locationNameArray[coord]
+        //   });
+        // }
+        //.click(function(){alert(i);})
+      }
+
+
+      var loadPOIDescription = function(){
+          var marker = this;
+          var i= marker.id;
+          
+          //close all other info windows
+          infowindow.close();
+          
+          infowindow = new google.maps.InfoWindow({
+                  map: that.map,
+                  position: locationArray[i],
+                  content: locationTextArray[i]
+                });
+          
+      }
+
+      var handleNoGeolocation = function(errorFlag) {
+        if (errorFlag) {
+          var content = '<br/><b>בעיה בקבלת מיקומך</b>';
+        } else {
+          var content = '<br/><b>מכשירך אינו תומך בשרותי מיקום</b>';
+        }
+
+        var options = {
+          map: that.map,
+          position: new google.maps.LatLng(32.165833, 34.836667),
+          content: content
+        };
+
+        infowindow = new google.maps.InfoWindow(options);
+        that.map.setCenter(options.position);
+
+        //console.log(infowindow);
+      }
+
+      
+
+    //}
+
+    google.maps.event.addDomListener(window, 'load', initialize);
+
+    //setTimeout(function () { infowindow.close(); }, 5000);
+      
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"/>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-41361579-1', 'extra-internet.net');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>
